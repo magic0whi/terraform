@@ -79,15 +79,15 @@ resource "google_compute_firewall" "allow_https" {
   target_tags   = ["allow-https"]
 }
 
-resource "google_compute_disk" "swap_tmp" {
-  # Convert the list to a map where the key is the instance_name for for_each
-  for_each = { for node in local.nodes : node.instance_name => node }
+# resource "google_compute_disk" "swap_tmp" {
+#   # Convert the list to a map where the key is the instance_name for for_each
+#   for_each = { for node in local.nodes : node.instance_name => node }
 
-  name = "${each.value.instance_name}-swap-tmp"
-  type = "pd-balanced"
-  zone = each.value.zone
-  size = 10
-}
+#   name = "${each.value.instance_name}-swap-tmp"
+#   type = "pd-balanced"
+#   zone = each.value.zone
+#   size = 10
+# }
 
 resource "google_compute_instance" "node" {
   for_each = { for node in local.nodes : node.instance_name => node }
@@ -108,11 +108,11 @@ resource "google_compute_instance" "node" {
     ssh-keys = "proteus:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHBAm5d2IeApyfv8zLb7IMpex7wVHkCV86ztON7HFTkn proteus"
   }
 
-  attached_disk {
-    source      = google_compute_disk.swap_tmp[each.key].id
-    device_name = google_compute_disk.swap_tmp[each.key].name
-    mode        = "READ_WRITE"
-  }
+  # attached_disk {
+  #   source      = google_compute_disk.swap_tmp[each.key].id
+  #   device_name = google_compute_disk.swap_tmp[each.key].name
+  #   mode        = "READ_WRITE"
+  # }
 
   boot_disk {
     auto_delete = true
