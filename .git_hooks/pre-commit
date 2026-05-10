@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+ERRORS_FOUND=0
+
+# Run Git's built-in whitespace check on staged changes
+if ! git --no-pager diff --cached --check; then
+  echo "❌ Commit rejected: Trailing whitespace found in your staged changes."
+  echo "Please fix the whitespace errors and stage the files again."
+  exit 1
+fi
+
+# Reject the commit if any checks failed
+if [ "$ERRORS_FOUND" = "1" ]; then
+  echo "🚫 Commit rejected. Please fix the formatting issues and stage the files again."
+  exit 1
+fi
