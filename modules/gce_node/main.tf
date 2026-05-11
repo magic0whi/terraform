@@ -11,8 +11,8 @@ variable "network_name" { type = string }
 resource "google_compute_instance" "node" {
   name         = var.name
   zone         = var.zone
+  tags         = concat(["allow-icmp", "allow-ssh", "allow-https"], var.extra_tags)
   machine_type = "e2-micro"
-  tags         = ["allow-https", "allow-ssh"]
 
   allow_stopping_for_update = true
   desired_status            = "RUNNING"

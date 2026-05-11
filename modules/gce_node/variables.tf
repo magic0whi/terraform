@@ -26,3 +26,9 @@ variable "sa_email" {
   type        = string
   description = "The service account email to associate with the instance"
 }
+
+variable "extra_tags" {
+  type        = list(string)
+  default     = []
+  description = "Additional tags to add to the default list"
+}

@@ -1,5 +1,14 @@
 resource "google_compute_network" "vpc_network" { name = "terraform-network" }
 
+# In GCP, firewall rules that use target_tags only apply to VMs that have those exact same tags.
+resource "google_compute_firewall" "allow_icmp" {
+  name          = "terraform-network-allow-icmp"
+  network       = google_compute_network.vpc_network.id
+  target_tags   = ["allow-icmp"]
+  source_ranges = ["0.0.0.0/0"]
+  allow { protocol = "icmp" }
+}
+
 resource "google_compute_firewall" "allow_internal" {
   name          = "terraform-network-allow-internal"
   network       = google_compute_network.vpc_network.id
@@ -29,8 +38,8 @@ resource "google_compute_firewall" "allow_ssh" {
 resource "google_compute_firewall" "allow_https" {
   name          = "terraform-network-allow-https"
   network       = google_compute_network.vpc_network.id
-  source_ranges = ["0.0.0.0/0"]
   target_tags   = ["allow-https"]
+  source_ranges = ["0.0.0.0/0"]
   allow {
     protocol = "tcp"
     ports    = ["443"]

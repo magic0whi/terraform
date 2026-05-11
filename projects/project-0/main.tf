@@ -20,12 +20,28 @@ locals { # Define Nodes
   }]
 }
 
+resource "google_compute_firewall" "allow_easytier" {
+  name          = "terraform-network-allow-easytier"
+  network       = module.network.network_id
+  target_tags   = ["allow-easytier"]
+  source_ranges = ["0.0.0.0/0"]
+  allow {
+    protocol = "tcp"
+    ports    = ["10010-10013"]
+  }
+  allow {
+    protocol = "udp"
+    ports    = ["10010-10012"]
+  }
+}
+
 module "network" { source = "../../modules/vpc_network" }
 
 module "nodes" {
   source   = "../../modules/gce_node"
   for_each = { for n in local.nodes : n.name => n }
 
+  extra_tags     = ["allow-easytier"]
   project        = var.project_id
   sa_email       = var.sa_email
   name           = each.value.name
