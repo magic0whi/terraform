@@ -46,5 +46,20 @@ resource "google_compute_firewall" "allow_https" {
   }
 }
 
+resource "google_compute_firewall" "allow_easytier" {
+  name          = "terraform-network-allow-easytier"
+  network       = google_compute_network.vpc_network.id
+  target_tags   = ["allow-easytier"]
+  source_ranges = ["0.0.0.0/0"]
+  allow {
+    protocol = "tcp"
+    ports    = ["11010-11013"]
+  }
+  allow {
+    protocol = "udp"
+    ports    = ["11010-11012"]
+  }
+}
+
 output "network_id" { value = google_compute_network.vpc_network.id }
 output "network_name" { value = google_compute_network.vpc_network.name }
